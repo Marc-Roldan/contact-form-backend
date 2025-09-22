@@ -6,12 +6,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// PostgreSQL connection
+// Use DATABASE_URL from Railway
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL, // NOT PG_HOST, PG_USER, etc.
-  ssl: { rejectUnauthorized: false } // add this for Railway
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false } // Required for Railway Postgres
 });
-
 
 // Test database connection
 pool.connect()
@@ -43,10 +42,11 @@ app.post("/contact", async (req, res) => {
     res.status(201).json({ message: "Message saved", data: result.rows[0] });
   } catch (err) {
     console.error("Database error:", err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: "Database error" });
   }
 });
 
+// Use PORT from Railway or fallback to 3000
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
