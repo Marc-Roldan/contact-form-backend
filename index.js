@@ -9,8 +9,10 @@ app.use(express.json());
 
 // PostgreSQL connection
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL, // NOT PG_HOST, PG_USER, etc.
+  ssl: { rejectUnauthorized: false } // add this for Railway
 });
+
 
 // Test database connection
 pool.connect()
